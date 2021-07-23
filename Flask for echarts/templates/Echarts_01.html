@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" style="height:100%">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../static/echarts.min.js"></script>
+</head>
+<body style="height:100%;width:100%">
+<!-- 创建div容器用于存放图形 -->
+<div id="box" style="width:500px;height: 600px">fucking window</div>
+<!-- 引入echarts资源 -->
+<script>
+    {#// 获取div容器#}
+    {#let dom = document.getElementById('container');#}
+    {#// 初始化echarts图像#}
+    {#let myChart = echarts.init(dom);#}
+    var myChart = echarts.init(document.getElementById("box"));
+    // 从后端获取数据
+    var time_now = [{% for item in time_now %}'{{ item }}',{% endfor %}];
+    var temperature = [{% for item in temperature %}{{ item }}, {% endfor %}];
+    var wet = [{% for item in wet %}{{ item }}, {% endfor %}];
+    // var weather = [{% for item in weather %}{{ item }}, {% endfor %}];
+    // var windDirection = [{% for item in windDirection %}{{ item }}, {% endfor %}];
+    // var windSpeed = [{% for item in windSpeed %}{{ item }}, {% endfor %}];
+    // 配置图形参数
+    var colors = ['#5470C6', '#91CC75', '#EE6666'];
+    option = {
+        color: colors,
+        tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+            type: 'cross'
+        }
+    },
+        grid: {
+        right: '20%'
+    },
+
+        toolbox: {
+        feature: {
+            dataView: {show: true, readOnly: false},
+            restore: {show: true},
+            saveAsImage: {show: true}
+        }
+    },
+        legend: {
+        data: ['温度(℃)', '湿度(%)',
+            // '天气'
+        ]
+    },
+
+        xAxis: {
+            type: 'category',
+            axisTick: {
+                alignWithLabel: true
+            },
+            data: time_now
+        },
+        yAxis: [{
+            type: 'value',
+            name: "温度(℃)",
+            max: 60,
+            min: -20,
+            position: 'left',
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: colors[0]
+                }
+            },
+            axisLabel: {
+                formatter: '{value} ℃'
+            }
+        },
+            {
+                type: 'value',
+                name: "湿度(%)",
+                max: 100,
+                min: 0,
+                position: 'right',
+                axisLine: {
+                show: true,
+                lineStyle: {
+                    color: colors[1]
+                }
+            },
+                axisLabel: {
+                    formatter: '{value} %'
+            }
+            }],
+        series: [{
+            name: "温度(℃)",
+            data: temperature,
+            type: 'line',
+            smooth: true
+        },
+            {
+                name: "湿度(%)",
+                data: wet,
+                type: 'line',
+                yAxisIndex:1,
+                smooth: true
+            },
+        //     {
+        //         data: [
+        //     {value:weather,name:'天气'},
+        //     {value:windDirection,name:'风向'},
+        //     {value:windDirection,name:'风速'},
+        // ]}
+        //     {
+        //         name: "天气",
+        //         data: weather,
+        //         type: "value",
+        //
+        //     },
+        ]
+    };
+    // 将配置的参数传递给echarts对象
+    option && myChart.setOption(option);
+
+</script>
+
+
+</body>
+</html>
